@@ -1,46 +1,34 @@
 class Solution:
     def exist(self, board: List[List[str]], word: str) -> bool:
-        def rec_check(met, row, col):
-            if met.join(board[row][col]) not in word:
-                return
-                ##make copy of board. to avoid going over the same place twice, erase values at cells after making sure that some value is in the word. the copy should restart when we return and in the meantime we erased.  maybe be a passable attribute?DEF. 
-            #up
-            try:
-               a=board[row+1, col]
-            except:
-                pass
-            else:
-                rec_check(met.join(board[row][col]), row+1, col)
+        def rec_check(met, row, col, visited) -> bool:
+
+            #isnt part of the solution or was visited already
+            if not word.startswith(met + board[row][col]) or (row, col) in visited:
+                return False
+            #found the word.
+            if met + board[row][col] == word:
+                return True
+            
+            visited.add((row,col))
+
             #down
-            try:
-               a=board[row-1, col]
-            except:
-                pass
-            else:
-                rec_check(met.join(board[row][col]), row-1, col)
+            if row + 1 < len(board) and rec_check(met + board[row][col], row + 1, col, visited):
+                return True
+            #up
+            if row - 1 >= 0 and rec_check(met + board[row][col], row - 1, col, visited):
+                return True
             #right
-            try:
-               a=board[row, col+1]
-            except:
-                pass
-            else:
-                rec_check(met.join(board[row][col]), row, col+1)
+            if col + 1 < len(board[0]) and rec_check(met + board[row][col], row, col + 1, visited):
+                return True
             #left
-            try:
-               a=board[row, col-1]
-            except:
-                pass
-            else:
-                rec_check(met.join(board[row][col]), row, col-1)
+            if col - 1 >= 0 and rec_check(met + board[row][col], row, col - 1, visited):
+                return True
 
-            return met
+            visited.remove((row, col))
+            return False
 
-
-        for i in range(len(board)-len(word)):
-            for j in range(len(board[0])-len(word))
-                met=''
-                if rec_check(met, i,j) == word:
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                if rec_check('', i,j, set()):
                     return True
         return False
-
-            
